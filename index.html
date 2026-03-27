@@ -3,714 +3,246 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>slowcupcke — dev portfolio</title>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <title>slowcupcke — network & hardware engineering</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800;900&display=swap" rel="stylesheet" />
   <style>
-    /* ── CSS Variables ── */
     :root {
-      --bg:        #0b0b0f;
-      --surface:   #111118;
-      --border:    #1e1e2e;
-      --pink:      #ff5fa0;
-      --pink-dim:  #c43070;
-      --lavender:  #b8a0ff;
-      --mint:      #6fffd4;
-      --cream:     #fff5e6;
-      --muted:     #5a5a7a;
-      --text:      #e8e8f0;
-      --mono:      'Space Mono', monospace;
-      --display:   'Syne', sans-serif;
+      --bg: #060a0f; --surface: #0a1018; --surface2: #0f1622;
+      --border: #162030; --cyan: #00d4ff; --cyan-dim: #0090bb;
+      --cyan-glow: rgba(0,212,255,0.12); --green: #39ff8a;
+      --orange: #ff8c42; --cream: #e8f4f8;
+      --muted: #3a5060; --muted2: #6a8898; --text: #cce4ee;
+      --mono: 'Space Mono', monospace; --display: 'Syne', sans-serif;
     }
-
-    /* ── Reset ── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 14px;
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-
-    /* ── Noise grain overlay ── */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-      pointer-events: none;
-      z-index: 1000;
-      opacity: 0.5;
-    }
-
-    /* ── Scrollbar ── */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--pink-dim); border-radius: 2px; }
-
-    /* ── Navigation ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.2rem 3rem;
-      background: rgba(11,11,15,0.85);
-      backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    .nav-logo {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: 1.1rem;
-      color: var(--cream);
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-    .nav-logo span { color: var(--pink); }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      transition: color 0.2s;
-    }
-    .nav-links a:hover { color: var(--pink); }
-
-    /* ── Hero ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 8rem 3rem 4rem;
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* glowing orb bg */
-    #hero::after {
-      content: '';
-      position: absolute;
-      top: 10%; left: -10%;
-      width: 60vw; height: 60vw;
-      background: radial-gradient(circle, rgba(255,95,160,0.12) 0%, transparent 65%);
-      pointer-events: none;
-      animation: orb-drift 8s ease-in-out infinite alternate;
-    }
-    @keyframes orb-drift {
-      from { transform: translate(0, 0); }
-      to   { transform: translate(8vw, 6vh); }
-    }
-
-    .hero-label {
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--pink);
-      margin-bottom: 1.2rem;
-      opacity: 0;
-      animation: fade-up 0.6s 0.2s ease forwards;
-    }
-
-    .hero-title {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: clamp(3rem, 9vw, 7rem);
-      line-height: 0.95;
-      color: var(--cream);
-      margin-bottom: 1.5rem;
-      opacity: 0;
-      animation: fade-up 0.7s 0.4s ease forwards;
-    }
-    .hero-title .accent { color: var(--pink); }
-    .hero-title .accent2 { color: var(--lavender); }
-
-    .hero-sub {
-      max-width: 520px;
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-bottom: 2.5rem;
-      opacity: 0;
-      animation: fade-up 0.7s 0.6s ease forwards;
-    }
-
-    .hero-actions {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-      opacity: 0;
-      animation: fade-up 0.7s 0.8s ease forwards;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.6rem;
-      border-radius: 2px;
-      font-family: var(--mono);
-      font-size: 0.78rem;
-      letter-spacing: 0.06em;
-      text-decoration: none;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: var(--pink);
-      color: #0b0b0f;
-      border: 2px solid var(--pink);
-      font-weight: 700;
-    }
-    .btn-primary:hover {
-      background: transparent;
-      color: var(--pink);
-    }
-    .btn-ghost {
-      background: transparent;
-      color: var(--text);
-      border: 2px solid var(--border);
-    }
-    .btn-ghost:hover {
-      border-color: var(--lavender);
-      color: var(--lavender);
-    }
-
-    /* blinking cursor */
-    .cursor {
-      display: inline-block;
-      width: 3px; height: 0.9em;
-      background: var(--pink);
-      margin-left: 4px;
-      vertical-align: middle;
-      animation: blink 1s step-end infinite;
-    }
-    @keyframes blink { 50% { opacity: 0; } }
-
-    /* terminal pill badge */
-    .terminal-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 100px;
-      padding: 0.4rem 1rem 0.4rem 0.6rem;
-      font-size: 0.72rem;
-      color: var(--mint);
-      margin-bottom: 2rem;
-      opacity: 0;
-      animation: fade-up 0.6s 0.1s ease forwards;
-    }
-    .pill-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--mint);
-      animation: pulse 2s ease infinite;
-    }
-    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-    @keyframes fade-up {
-      from { opacity:0; transform:translateY(20px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    /* ── Section Layout ── */
-    section {
-      padding: 5rem 3rem;
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
-    .section-tag {
-      font-size: 0.7rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--pink);
-      margin-bottom: 0.6rem;
-    }
-
-    .section-title {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: clamp(1.8rem, 4vw, 3rem);
-      color: var(--cream);
-      margin-bottom: 1rem;
-      line-height: 1.1;
-    }
-
-    .section-divider {
-      width: 40px;
-      height: 2px;
-      background: var(--pink);
-      margin-bottom: 3rem;
-    }
-
-    /* ── About ── */
-    #about .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 4rem;
-      align-items: start;
-    }
-
-    .about-text p {
-      color: var(--muted);
-      margin-bottom: 1rem;
-      font-size: 0.88rem;
-    }
-    .about-text p strong { color: var(--text); }
-
-    .stats-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-    .stat-box {
-      background: var(--surface);
-      padding: 1.5rem;
-      text-align: center;
-    }
-    .stat-num {
-      font-family: var(--display);
-      font-size: 2.5rem;
-      font-weight: 800;
-      color: var(--pink);
-      line-height: 1;
-    }
-    .stat-label {
-      font-size: 0.68rem;
-      letter-spacing: 0.1em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-top: 0.3rem;
-    }
-
-    /* ── Skills ── */
-    #skills .skills-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    .skill-group-label {
-      font-size: 0.68rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 0.75rem;
-    }
-
-    .skill-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.6rem;
-    }
-
-    .skill-pill {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 0.4rem 0.9rem;
-      font-size: 0.78rem;
-      color: var(--text);
-      border-radius: 2px;
-      transition: all 0.2s;
-      cursor: default;
-    }
-    .skill-pill:hover {
-      border-color: var(--pink);
-      color: var(--pink);
-      background: rgba(255,95,160,0.06);
-    }
-    .skill-pill.lang { border-color: rgba(184,160,255,0.3); color: var(--lavender); }
-    .skill-pill.tool { border-color: rgba(111,255,212,0.3); color: var(--mint); }
-
-    /* ── Projects ── */
-    #projects .projects-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 1px;
-      background: var(--border);
-      border: 1px solid var(--border);
-    }
-
-    .project-card {
-      background: var(--surface);
-      padding: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 0.8rem;
-      transition: background 0.2s;
-      text-decoration: none;
-      color: inherit;
-      position: relative;
-      overflow: hidden;
-    }
-    .project-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 2px;
-      background: var(--pink);
-      transform: scaleX(0);
-      transform-origin: left;
-      transition: transform 0.3s ease;
-    }
-    .project-card:hover { background: #14141e; }
-    .project-card:hover::before { transform: scaleX(1); }
-
-    .project-number {
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.1em;
-    }
-    .project-name {
-      font-family: var(--display);
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: var(--cream);
-    }
-    .project-desc {
-      font-size: 0.82rem;
-      color: var(--muted);
-      flex: 1;
-    }
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.4rem;
-    }
-    .project-tag {
-      font-size: 0.65rem;
-      letter-spacing: 0.08em;
-      background: rgba(255,95,160,0.1);
-      color: var(--pink);
-      padding: 0.2rem 0.55rem;
-      border-radius: 100px;
-    }
-    .project-arrow {
-      position: absolute;
-      top: 1.5rem; right: 1.5rem;
-      color: var(--muted);
-      font-size: 1rem;
-      transition: color 0.2s, transform 0.2s;
-    }
-    .project-card:hover .project-arrow {
-      color: var(--pink);
-      transform: translate(3px, -3px);
-    }
-
-    /* ── Contact ── */
-    #contact {
-      text-align: center;
-    }
-    #contact .contact-inner {
-      border: 1px solid var(--border);
-      padding: 4rem 3rem;
-      position: relative;
-      overflow: hidden;
-    }
-    #contact .contact-inner::before {
-      content: '';
-      position: absolute;
-      bottom: -50%; left: 50%;
-      transform: translateX(-50%);
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(255,95,160,0.1) 0%, transparent 65%);
-      pointer-events: none;
-    }
-    .contact-email {
-      font-family: var(--display);
-      font-size: clamp(1.4rem, 4vw, 2.5rem);
-      font-weight: 800;
-      color: var(--cream);
-      margin: 1rem 0 2rem;
-      display: block;
-      text-decoration: none;
-      transition: color 0.2s;
-    }
-    .contact-email:hover { color: var(--pink); }
-
-    .social-links {
-      display: flex;
-      justify-content: center;
-      gap: 1.2rem;
-      flex-wrap: wrap;
-    }
-    .social-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      transition: color 0.2s;
-    }
-    .social-link:hover { color: var(--lavender); }
-
-    /* ── Footer ── */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 1.5rem 3rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.7rem;
-      color: var(--muted);
-      letter-spacing: 0.05em;
-    }
-    footer span { color: var(--pink); }
-
-    /* ── Responsive ── */
-    @media (max-width: 700px) {
-      nav { padding: 1rem 1.5rem; }
-      section { padding: 3.5rem 1.5rem; }
-      #hero { padding: 7rem 1.5rem 3rem; }
-      #about .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
-      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
-    }
+    *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+    html { scroll-behavior:smooth; }
+    body { background:var(--bg); color:var(--text); font-family:var(--mono); font-size:14px; line-height:1.7; overflow-x:hidden; cursor:none; }
+    #cursor { position:fixed;width:10px;height:10px;background:var(--cyan);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .2s,height .2s;mix-blend-mode:screen; }
+    #cursor-ring { position:fixed;width:36px;height:36px;border:1.5px solid rgba(0,212,255,.4);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s; }
+    body:has(a:hover) #cursor { width:16px;height:16px;background:var(--green); }
+    body:has(a:hover) #cursor-ring { width:52px;height:52px;border-color:var(--green); }
+    body::before { content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.35; }
+    body::after { content:'';position:fixed;inset:0;background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:48px 48px;pointer-events:none;z-index:0; }
+    ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--cyan-dim)}
+    nav { position:fixed;top:0;left:0;right:0;z-index:500;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;background:rgba(6,10,15,.85);backdrop-filter:blur(20px);border-bottom:1px solid var(--border); }
+    .nav-logo{font-family:var(--display);font-weight:900;font-size:1rem;color:var(--cream);text-decoration:none;display:flex;align-items:center;gap:.6rem}
+    .nav-logo .cy{color:var(--cyan)}
+    .nav-links{display:flex;gap:.2rem;list-style:none}
+    .nav-links a{color:var(--muted2);text-decoration:none;font-size:.74rem;letter-spacing:.1em;text-transform:uppercase;padding:.4rem .9rem;border-radius:2px;transition:all .2s;position:relative}
+    .nav-links a:hover,.nav-links a.active{color:var(--cream);background:var(--surface2)}
+    .nav-links a.active::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:4px;height:4px;background:var(--cyan);border-radius:50%}
+    /* HERO */
+    #hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;padding:8rem 3rem 4rem;position:relative;z-index:1;overflow:hidden}
+    .orb{position:absolute;border-radius:50%;pointer-events:none;filter:blur(70px)}
+    .orb-1{width:600px;height:600px;background:radial-gradient(circle,rgba(0,212,255,.10),transparent 65%);top:-10%;left:-15%;animation:float1 11s ease-in-out infinite alternate}
+    .orb-2{width:400px;height:400px;background:radial-gradient(circle,rgba(57,255,138,.07),transparent 65%);bottom:5%;right:0%;animation:float2 14s ease-in-out infinite alternate}
+    .orb-3{width:250px;height:250px;background:radial-gradient(circle,rgba(255,140,66,.06),transparent 65%);top:55%;left:45%;animation:float3 9s ease-in-out infinite alternate}
+    @keyframes float1{to{transform:translate(5vw,4vh)}}@keyframes float2{to{transform:translate(-4vw,-6vh)}}@keyframes float3{to{transform:translate(2vw,5vh)}}
+    .packet-canvas{position:absolute;inset:0;pointer-events:none;z-index:0}
+    .status-pill{display:inline-flex;align-items:center;gap:.6rem;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:.4rem 1rem .4rem .7rem;font-size:.7rem;color:var(--green);margin-bottom:2rem;width:fit-content;opacity:0;animation:fade-up .5s .1s ease forwards}
+    .status-dot{width:7px;height:7px;border-radius:50%;background:var(--green);animation:pulse 2s ease infinite;box-shadow:0 0 8px var(--green)}
+    @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.3;transform:scale(.7)}}
+    .hero-eyebrow{font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:1rem;opacity:0;animation:fade-up .5s .2s ease forwards}
+    .hero-title{font-family:var(--display);font-weight:900;font-size:clamp(3rem,9vw,7.5rem);line-height:.92;color:var(--cream);margin-bottom:1.6rem;opacity:0;animation:fade-up .6s .35s ease forwards}
+    .hero-title .cy{color:var(--cyan)}.hero-title .gr{color:var(--green)}
+    .typewriter-wrap{font-size:clamp(.88rem,2vw,1.05rem);color:var(--muted2);margin-bottom:1.8rem;opacity:0;animation:fade-up .6s .5s ease forwards}
+    #typewriter{color:var(--cyan);font-style:italic}
+    .tw-cursor{display:inline-block;width:2px;height:1em;background:var(--cyan);vertical-align:middle;margin-left:2px;animation:blink .8s step-end infinite}
+    @keyframes blink{50%{opacity:0}}
+    .hero-desc{max-width:520px;color:var(--muted2);font-size:.86rem;margin-bottom:2.5rem;line-height:1.85;opacity:0;animation:fade-up .6s .65s ease forwards}
+    .hero-desc strong{color:var(--text)}
+    .hero-desc code{background:var(--surface);border:1px solid var(--border);padding:.1rem .4rem;font-size:.8em;color:var(--cyan);border-radius:2px}
+    .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fade-up .6s .8s ease forwards}
+    .uptime-strip{display:flex;align-items:center;gap:2.5rem;flex-wrap:wrap;margin-top:3rem;padding-top:2rem;border-top:1px solid var(--border);opacity:0;animation:fade-up .6s 1s ease forwards}
+    .uptime-item{display:flex;flex-direction:column;gap:.1rem}
+    .uptime-val{font-family:var(--display);font-weight:800;font-size:1.4rem;color:var(--cyan);line-height:1}
+    .uptime-label{font-size:.62rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+    .btn{display:inline-flex;align-items:center;gap:.5rem;padding:.8rem 1.8rem;border-radius:2px;font-family:var(--mono);font-size:.78rem;letter-spacing:.07em;text-decoration:none;cursor:none;transition:all .25s;font-weight:700;border:2px solid transparent}
+    .btn-primary{background:var(--cyan);color:#060a0f;border-color:var(--cyan)}
+    .btn-primary:hover{background:transparent;color:var(--cyan);box-shadow:0 0 30px rgba(0,212,255,.25)}
+    .btn-ghost{background:transparent;color:var(--text);border-color:var(--border)}
+    .btn-ghost:hover{border-color:var(--green);color:var(--green);box-shadow:0 0 20px rgba(57,255,138,.08)}
+    @keyframes fade-up{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+    /* MARQUEE */
+    .marquee-band{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:.75rem 0;overflow:hidden;position:relative;z-index:1;background:var(--surface)}
+    .marquee-inner{display:flex;gap:3rem;animation:marquee 30s linear infinite;width:max-content}
+    .marquee-item{font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;color:var(--muted2);white-space:nowrap;display:flex;align-items:center;gap:.7rem}
+    .marquee-dot{width:4px;height:4px;border-radius:50%;background:var(--cyan)}
+    @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    /* SECTIONS */
+    .section-wrap{max-width:1100px;margin:0 auto;padding:5rem 3rem;position:relative;z-index:1}
+    .section-tag{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:.5rem}
+    .section-title{font-family:var(--display);font-weight:900;font-size:clamp(2rem,4vw,3rem);color:var(--cream);line-height:1.05;margin-bottom:.8rem}
+    .section-rule{width:36px;height:2px;background:var(--cyan);margin-bottom:3rem}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.visible{opacity:1;transform:translateY(0)}
+    /* ABOUT */
+    .about-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:5rem;align-items:start}
+    .about-text p{color:var(--muted2);font-size:.88rem;margin-bottom:1.1rem}
+    .about-text p strong{color:var(--cream)}
+    .about-text code{background:var(--surface);border:1px solid var(--border);padding:.1rem .4rem;font-size:.8em;color:var(--cyan);border-radius:2px}
+    .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border)}
+    .stat-card{background:var(--surface);padding:1.6rem;text-align:center;transition:background .2s}
+    .stat-card:hover{background:var(--surface2)}
+    .stat-num{font-family:var(--display);font-weight:900;font-size:2rem;line-height:1;color:var(--cyan)}
+    .stat-label{font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-top:.4rem}
+    .spec-pills{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.8rem}
+    .spec-pill{background:var(--surface);border:1px solid var(--border);padding:.35rem .85rem;font-size:.72rem;color:var(--muted2);border-radius:2px;transition:all .2s}
+    .spec-pill:hover{border-color:var(--cyan);color:var(--cyan);background:var(--cyan-glow)}
+    /* PROJECTS */
+    .featured-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+    .proj-card{background:var(--surface);padding:2rem;display:flex;flex-direction:column;gap:.75rem;text-decoration:none;color:inherit;position:relative;overflow:hidden;transition:background .2s}
+    .proj-card::before{content:'';position:absolute;top:0;left:0;width:100%;height:2px;background:var(--cyan);transform:scaleX(0);transform-origin:left;transition:transform .35s ease}
+    .proj-card:hover{background:var(--surface2)}.proj-card:hover::before{transform:scaleX(1)}
+    .proj-num{font-size:.68rem;color:var(--muted)}.proj-name{font-family:var(--display);font-weight:700;font-size:1.1rem;color:var(--cream)}
+    .proj-desc{font-size:.8rem;color:var(--muted2);flex:1}
+    .proj-tags{display:flex;flex-wrap:wrap;gap:.35rem}
+    .proj-tag{font-size:.62rem;background:rgba(0,212,255,.08);color:var(--cyan);padding:.18rem .55rem;border-radius:100px;letter-spacing:.05em}
+    .proj-arrow{position:absolute;top:1.4rem;right:1.4rem;color:var(--muted);font-size:1rem;transition:all .2s}
+    .proj-card:hover .proj-arrow{color:var(--cyan);transform:translate(3px,-3px)}
+    .view-all-row{display:flex;justify-content:flex-end;margin-top:1.5rem}
+    footer{border-top:1px solid var(--border);padding:1.8rem 3rem;display:flex;justify-content:space-between;align-items:center;font-size:.68rem;color:var(--muted);letter-spacing:.05em;position:relative;z-index:1}
+    footer .logo{font-family:var(--display);font-weight:800;color:var(--cream);text-decoration:none}
+    footer .logo span{color:var(--cyan)}
+    @media(max-width:750px){nav{padding:1rem 1.4rem}.nav-links a{padding:.4rem .55rem;font-size:.68rem}.section-wrap,#hero{padding-left:1.5rem;padding-right:1.5rem}.about-grid{grid-template-columns:1fr;gap:2.5rem}.featured-grid{grid-template-columns:1fr}.uptime-strip{gap:1.2rem}footer{flex-direction:column;gap:.5rem;text-align:center}}
   </style>
 </head>
 <body>
-
-<!-- ── NAV ── -->
+<div id="cursor"></div><div id="cursor-ring"></div>
 <nav>
-  <a href="#hero" class="nav-logo">
-    🧁 <span>slow</span>cupcke
-  </a>
+  <a href="index.html" class="nav-logo">🧁 <span class="cy">slow</span>cupcke</a>
   <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#skills">Skills</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="skills.html">Skills</a></li>
+    <li><a href="projects.html">Projects</a></li>
+    <li><a href="contact.html">Contact</a></li>
   </ul>
 </nav>
 
-<!-- ── HERO ── -->
 <section id="hero">
-  <div class="terminal-pill">
-    <span class="pill-dot"></span>
-    available for projects &amp; collabs
-  </div>
-  <p class="hero-label">// developer &amp; builder</p>
-  <h1 class="hero-title">
-    slow<span class="accent">cupcke</span><br />
-    <span class="accent2">builds</span> things<span class="cursor"></span>
-  </h1>
-  <p class="hero-sub">
-    Full-stack developer who loves crafting clean code, interesting tools, and the occasional side project at 2am.
-    Welcome to my little corner of the internet.
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+  <canvas class="packet-canvas" id="packetCanvas"></canvas>
+  <div class="status-pill"><span class="status-dot"></span>lab online · all links up · no STP loops</div>
+  <p class="hero-eyebrow">// network engineering · hardware · SDR</p>
+  <h1 class="hero-title">slow<span class="cy">cupcke</span><br/>builds <span class="gr">real</span><br/>networks.</h1>
+  <div class="typewriter-wrap">Specialising in <span id="typewriter"></span><span class="tw-cursor"></span></div>
+  <p class="hero-desc">
+    Network engineer and hardware tinkerer with a passion for <strong>high-performance infrastructure</strong>. From designing BGP topologies and tuning OSPF areas to pulling fibre, deploying <code>RDMA</code> over InfiniBand, and listening to the RF spectrum with SDR — if it has a packet or a signal, I want to understand it.
   </p>
-  <div class="hero-actions">
-    <a href="#projects" class="btn btn-primary">→ view projects</a>
-    <a href="https://github.com/slowcupcke" target="_blank" class="btn btn-ghost">⌥ github profile</a>
+  <div class="hero-ctas">
+    <a href="projects.html" class="btn btn-primary">→ view my builds</a>
+    <a href="https://github.com/slowcupcke" target="_blank" class="btn btn-ghost">⌥ github</a>
+  </div>
+  <div class="uptime-strip">
+    <div class="uptime-item"><span class="uptime-val">99.9%</span><span class="uptime-label">Lab Uptime</span></div>
+    <div class="uptime-item"><span class="uptime-val">40GbE</span><span class="uptime-label">Core Fabric</span></div>
+    <div class="uptime-item"><span class="uptime-val">56Gb/s</span><span class="uptime-label">IB Bandwidth</span></div>
+    <div class="uptime-item"><span class="uptime-val" id="fah-counter">0</span><span class="uptime-label">FAH Points</span></div>
   </div>
 </section>
 
-<!-- ── ABOUT ── -->
-<section id="about">
-  <p class="section-tag">// 01 — about</p>
-  <h2 class="section-title">Who am I?</h2>
-  <div class="section-divider"></div>
+<div class="marquee-band"><div class="marquee-inner">
+  <span class="marquee-item"><span class="marquee-dot"></span>BGP</span><span class="marquee-item"><span class="marquee-dot"></span>OSPF</span><span class="marquee-item"><span class="marquee-dot"></span>InfiniBand</span><span class="marquee-item"><span class="marquee-dot"></span>RDMA</span><span class="marquee-item"><span class="marquee-dot"></span>VLAN</span><span class="marquee-item"><span class="marquee-dot"></span>xVLAN</span><span class="marquee-item"><span class="marquee-dot"></span>VXLAN</span><span class="marquee-item"><span class="marquee-dot"></span>Fibre</span><span class="marquee-item"><span class="marquee-dot"></span>SDR</span><span class="marquee-item"><span class="marquee-dot"></span>Folding@Home</span><span class="marquee-item"><span class="marquee-dot"></span>GNU Radio</span><span class="marquee-item"><span class="marquee-dot"></span>iSCSI</span><span class="marquee-item"><span class="marquee-dot"></span>LACP</span><span class="marquee-item"><span class="marquee-dot"></span>Proxmox</span>
+  <span class="marquee-item"><span class="marquee-dot"></span>BGP</span><span class="marquee-item"><span class="marquee-dot"></span>OSPF</span><span class="marquee-item"><span class="marquee-dot"></span>InfiniBand</span><span class="marquee-item"><span class="marquee-dot"></span>RDMA</span><span class="marquee-item"><span class="marquee-dot"></span>VLAN</span><span class="marquee-item"><span class="marquee-dot"></span>xVLAN</span><span class="marquee-item"><span class="marquee-dot"></span>VXLAN</span><span class="marquee-item"><span class="marquee-dot"></span>Fibre</span><span class="marquee-item"><span class="marquee-dot"></span>SDR</span><span class="marquee-item"><span class="marquee-dot"></span>Folding@Home</span><span class="marquee-item"><span class="marquee-dot"></span>GNU Radio</span><span class="marquee-item"><span class="marquee-dot"></span>iSCSI</span><span class="marquee-item"><span class="marquee-dot"></span>LACP</span><span class="marquee-item"><span class="marquee-dot"></span>Proxmox</span>
+</div></div>
 
+<div class="section-wrap">
+  <p class="section-tag reveal">// 01 — about me</p>
+  <h2 class="section-title reveal">Engineer. Tinkerer.<br/>Packet nerd.</h2>
+  <div class="section-rule reveal"></div>
   <div class="about-grid">
-    <div class="about-text">
-      <p>Hey! I'm <strong>slowcupcke</strong> — a developer who enjoys building things that are useful, occasionally weird, and always a little personal.</p>
-      <p>I spend my time working across the stack: from designing clean UIs to wiring up backends and poking around with APIs. I'm particularly drawn to open source, tooling, and projects that scratch my own itches.</p>
-      <p>When I'm not at the keyboard I'm probably overthinking my next project idea or watching tutorials I'll never finish. <strong>That's the dev life.</strong></p>
-      <br />
-      <a href="https://github.com/slowcupcke" target="_blank" class="btn btn-ghost" style="margin-top:0.5rem;">→ github.com/slowcupcke</a>
+    <div class="about-text reveal">
+      <p>Hey — I'm <strong>slowcupcke</strong>. My home lab is my playground: a growing rack of switches, servers, and fibre patch panels held together by stubbornness and way too many SFP+ transceivers.</p>
+      <p>On the networking side I live at the <strong>L2/L3 boundary</strong> — building VLAN segmentation strategies, tuning BGP policies with route maps and prefix lists, running OSPF multi-area designs, and overlaying VXLAN tunnels across the fabric.</p>
+      <p>On the hardware side I run <strong>RDMA over InfiniBand</strong> for low-latency inter-node communication in a multi-node compute cluster, which feeds a Folding@Home distributed compute workload contributing to protein folding research.</p>
+      <p>When the lab is quiet I'm listening to the RF spectrum with an RTL-SDR or HackRF — decoding <code>ADS-B</code>, pulling NOAA APT satellite imagery, sniffing <code>ACARS</code>, or just watching the waterfall.</p>
+      <div class="spec-pills">
+        <span class="spec-pill">BGP / OSPF</span><span class="spec-pill">VLAN / xVLAN</span><span class="spec-pill">VXLAN</span><span class="spec-pill">InfiniBand</span><span class="spec-pill">RDMA</span><span class="spec-pill">SDR / RF</span><span class="spec-pill">Fibre</span><span class="spec-pill">Proxmox</span>
+      </div>
+      <br/>
+      <a href="skills.html" class="btn btn-ghost" style="margin-top:.5rem">→ full skills breakdown</a>
     </div>
-    <div>
-      <div class="stats-grid">
-        <div class="stat-box">
-          <div class="stat-num">∞</div>
-          <div class="stat-label">Side Projects Started</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">☕</div>
-          <div class="stat-label">Cups of Coffee</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">404</div>
-          <div class="stat-label">Bugs Fixed (Today)</div>
-        </div>
-        <div class="stat-box">
-          <div class="stat-num">1</div>
-          <div class="stat-label">GitHub Username</div>
-        </div>
+    <div class="reveal" style="transition-delay:.15s">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-num">10G+</div><div class="stat-label">Core Link Speed</div></div>
+        <div class="stat-card"><div class="stat-num">56Gb</div><div class="stat-label">IB Fabric</div></div>
+        <div class="stat-card"><div class="stat-num">48+</div><div class="stat-label">VLANs Configured</div></div>
+        <div class="stat-card"><div class="stat-num">☢️</div><div class="stat-label">FAH Active</div></div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ── SKILLS ── -->
-<section id="skills">
-  <p class="section-tag">// 02 — skills</p>
-  <h2 class="section-title">What I work with</h2>
-  <div class="section-divider"></div>
-
-  <div class="skills-wrap">
-    <div>
-      <p class="skill-group-label">Languages</p>
-      <div class="skill-pills">
-        <span class="skill-pill lang">JavaScript</span>
-        <span class="skill-pill lang">TypeScript</span>
-        <span class="skill-pill lang">Python</span>
-        <span class="skill-pill lang">HTML / CSS</span>
-        <span class="skill-pill lang">Bash</span>
-      </div>
-    </div>
-    <div>
-      <p class="skill-group-label">Frameworks &amp; Libraries</p>
-      <div class="skill-pills">
-        <span class="skill-pill">React</span>
-        <span class="skill-pill">Node.js</span>
-        <span class="skill-pill">Next.js</span>
-        <span class="skill-pill">Express</span>
-        <span class="skill-pill">Tailwind CSS</span>
-      </div>
-    </div>
-    <div>
-      <p class="skill-group-label">Tools &amp; Platforms</p>
-      <div class="skill-pills">
-        <span class="skill-pill tool">Git &amp; GitHub</span>
-        <span class="skill-pill tool">VS Code</span>
-        <span class="skill-pill tool">Docker</span>
-        <span class="skill-pill tool">Linux</span>
-        <span class="skill-pill tool">Vercel</span>
-        <span class="skill-pill tool">Figma</span>
-      </div>
-    </div>
+<div class="section-wrap">
+  <p class="section-tag reveal">// 02 — featured builds</p>
+  <h2 class="section-title reveal">Lab highlights</h2>
+  <div class="section-rule reveal"></div>
+  <div class="featured-grid">
+    <a href="projects.html" class="proj-card reveal">
+      <span class="proj-arrow">↗</span><p class="proj-num">01</p>
+      <h3 class="proj-name">Home BGP Lab</h3>
+      <p class="proj-desc">Multi-AS topology using FRRouting on Linux. Route reflectors, prefix lists, and full policy-based filtering between simulated ISP peers.</p>
+      <div class="proj-tags"><span class="proj-tag">BGP</span><span class="proj-tag">FRRouting</span><span class="proj-tag">OSPF</span></div>
+    </a>
+    <a href="projects.html" class="proj-card reveal" style="transition-delay:.1s">
+      <span class="proj-arrow">↗</span><p class="proj-num">02</p>
+      <h3 class="proj-name">InfiniBand Cluster</h3>
+      <p class="proj-desc">Multi-node server cluster on 56Gb/s QDR InfiniBand fabric. RDMA-enabled workloads, MPI tuning, and Folding@Home integration.</p>
+      <div class="proj-tags"><span class="proj-tag">InfiniBand</span><span class="proj-tag">RDMA</span><span class="proj-tag">FAH</span></div>
+    </a>
+    <a href="projects.html" class="proj-card reveal" style="transition-delay:.2s">
+      <span class="proj-arrow">↗</span><p class="proj-num">03</p>
+      <h3 class="proj-name">SDR Monitoring Stack</h3>
+      <p class="proj-desc">RTL-SDR + HackRF feeding a Python pipeline for ADS-B, NOAA satellite imagery, ACARS decoding, and a live spectrum dashboard.</p>
+      <div class="proj-tags"><span class="proj-tag">SDR</span><span class="proj-tag">GNU Radio</span><span class="proj-tag">Python</span></div>
+    </a>
   </div>
-</section>
+  <div class="view-all-row reveal"><a href="projects.html" class="btn btn-ghost">→ view all builds</a></div>
+</div>
 
-<!-- ── PROJECTS ── -->
-<section id="projects">
-  <p class="section-tag">// 03 — projects</p>
-  <h2 class="section-title">Things I've built</h2>
-  <div class="section-divider"></div>
-
-  <div class="projects-grid">
-
-    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
-      <span class="project-arrow">↗</span>
-      <p class="project-number">01</p>
-      <h3 class="project-name">Project Alpha</h3>
-      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
-      <div class="project-tags">
-        <span class="project-tag">React</span>
-        <span class="project-tag">Node</span>
-        <span class="project-tag">API</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
-      <span class="project-arrow">↗</span>
-      <p class="project-number">02</p>
-      <h3 class="project-name">Project Beta</h3>
-      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
-      <div class="project-tags">
-        <span class="project-tag">Python</span>
-        <span class="project-tag">CLI</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
-      <span class="project-arrow">↗</span>
-      <p class="project-number">03</p>
-      <h3 class="project-name">Project Gamma</h3>
-      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
-      <div class="project-tags">
-        <span class="project-tag">TypeScript</span>
-        <span class="project-tag">Next.js</span>
-        <span class="project-tag">Postgres</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
-      <span class="project-arrow">↗</span>
-      <p class="project-number">04</p>
-      <h3 class="project-name">Project Delta</h3>
-      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
-      <div class="project-tags">
-        <span class="project-tag">JavaScript</span>
-        <span class="project-tag">Chrome Extension</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
-      <span class="project-arrow">↗</span>
-      <p class="project-number">05</p>
-      <h3 class="project-name">Project Epsilon</h3>
-      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
-      <div class="project-tags">
-        <span class="project-tag">Docker</span>
-        <span class="project-tag">Bash</span>
-        <span class="project-tag">Automation</span>
-      </div>
-    </a>
-
-    <a href="https://github.com/slowcupcke" target="_blank" class="project-card" style="justify-content:center;align-items:center;min-height:180px;">
-      <span style="font-size:0.78rem;color:var(--muted);">+ more on GitHub →</span>
-    </a>
-
-  </div>
-</section>
-
-<!-- ── CONTACT ── -->
-<section id="contact">
-  <p class="section-tag">// 04 — contact</p>
-  <h2 class="section-title">Say hello</h2>
-  <div class="section-divider" style="margin:0 auto 3rem;"></div>
-
-  <div class="contact-inner">
-    <p style="color:var(--muted);font-size:0.88rem;max-width:420px;margin:0 auto 1rem;">
-      Got a project idea, a question, or just want to chat about dev stuff? My inbox is open.
-    </p>
-    <a href="mailto:hello@slowcupcke.dev" class="contact-email">hello@slowcupcke.dev</a>
-
-    <div class="social-links">
-      <a href="https://github.com/slowcupcke" target="_blank" class="social-link">
-        ⌥ GitHub
-      </a>
-      <a href="#" class="social-link">
-        ✦ Twitter / X
-      </a>
-      <a href="#" class="social-link">
-        ◈ LinkedIn
-      </a>
-      <a href="#" class="social-link">
-        ◉ Discord
-      </a>
-    </div>
-  </div>
-</section>
-
-<!-- ── FOOTER ── -->
 <footer>
-  <span>🧁 <span>slow</span>cupcke</span>
-  <span>built with HTML &amp; CSS · no frameworks harmed</span>
+  <a href="index.html" class="logo">🧁 <span>slow</span>cupcke</a>
+  <span>packets forwarded · fibres lit · no STP loops detected</span>
+  <span>© 2025 slowcupcke</span>
 </footer>
 
+<script>
+  const cur=document.getElementById('cursor'),ring=document.getElementById('cursor-ring');
+  let mx=0,my=0,rx=0,ry=0;
+  document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px';});
+  (function anim(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(anim)})();
+
+  const roles=['BGP route policy.','InfiniBand fabrics.','VLAN segmentation.','fibre infrastructure.','SDR signal decoding.','RDMA workloads.','OSPF area design.','VXLAN overlays.','home lab chaos.'];
+  let ri=0,ci=0,del=false;
+  const tw=document.getElementById('typewriter');
+  function type(){const w=roles[ri];if(!del){tw.textContent=w.slice(0,++ci);if(ci===w.length){del=true;setTimeout(type,1800);return;}}else{tw.textContent=w.slice(0,--ci);if(ci===0){del=false;ri=(ri+1)%roles.length;}}setTimeout(type,del?50:90);}
+  setTimeout(type,1000);
+
+  // FAH counter
+  const target=1234567;let count=0;const el=document.getElementById('fah-counter');
+  const iv=setInterval(()=>{count=Math.min(count+Math.ceil(target/120),target);el.textContent=count.toLocaleString();if(count>=target)clearInterval(iv);},16);
+
+  // Packet canvas
+  const canvas=document.getElementById('packetCanvas');
+  const ctx=canvas.getContext('2d');
+  function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight;}
+  resize();window.addEventListener('resize',resize);
+  const nodes=[{x:.12,y:.28},{x:.32,y:.14},{x:.58,y:.22},{x:.80,y:.38},{x:.50,y:.52},{x:.22,y:.62},{x:.70,y:.68},{x:.88,y:.18}];
+  const links=[[0,1],[1,2],[2,3],[3,4],[4,5],[5,0],[2,4],[1,5],[3,6],[6,4],[2,7],[7,3]];
+  const pkts=links.map(l=>({link:l,t:Math.random(),speed:.003+Math.random()*.004}));
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    const W=canvas.width,H=canvas.height;
+    links.forEach(([a,b])=>{ctx.beginPath();ctx.moveTo(nodes[a].x*W,nodes[a].y*H);ctx.lineTo(nodes[b].x*W,nodes[b].y*H);ctx.strokeStyle='rgba(0,212,255,.055)';ctx.lineWidth=1;ctx.stroke();});
+    nodes.forEach(n=>{ctx.beginPath();ctx.arc(n.x*W,n.y*H,3,0,Math.PI*2);ctx.fillStyle='rgba(0,212,255,.18)';ctx.fill();});
+    pkts.forEach(p=>{p.t+=p.speed;if(p.t>1)p.t=0;const[a,b]=p.link;const x=nodes[a].x*W+(nodes[b].x*W-nodes[a].x*W)*p.t;const y=nodes[a].y*H+(nodes[b].y*H-nodes[a].y*H)*p.t;ctx.beginPath();ctx.arc(x,y,2.5,0,Math.PI*2);ctx.fillStyle='rgba(0,212,255,.75)';ctx.fill();ctx.beginPath();ctx.arc(x,y,5,0,Math.PI*2);ctx.fillStyle='rgba(0,212,255,.12)';ctx.fill();});
+    requestAnimationFrame(draw);
+  }
+  draw();
+
+  const reveals=document.querySelectorAll('.reveal');
+  const obs=new IntersectionObserver(e=>e.forEach(r=>{if(r.isIntersecting)r.target.classList.add('visible');}),{threshold:.1});
+  reveals.forEach(r=>obs.observe(r));
+</script>
 </body>
 </html>

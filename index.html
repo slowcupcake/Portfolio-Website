@@ -1,6 +1,716 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>slowcupcke — dev portfolio</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap" rel="stylesheet" />
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --bg:        #0b0b0f;
+      --surface:   #111118;
+      --border:    #1e1e2e;
+      --pink:      #ff5fa0;
+      --pink-dim:  #c43070;
+      --lavender:  #b8a0ff;
+      --mint:      #6fffd4;
+      --cream:     #fff5e6;
+      --muted:     #5a5a7a;
+      --text:      #e8e8f0;
+      --mono:      'Space Mono', monospace;
+      --display:   'Syne', sans-serif;
+    }
+
+    /* ── Reset ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 14px;
+      line-height: 1.7;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise grain overlay ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 1000;
+      opacity: 0.5;
+    }
+
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--pink-dim); border-radius: 2px; }
+
+    /* ── Navigation ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 3rem;
+      background: rgba(11,11,15,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav-logo {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--cream);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .nav-logo span { color: var(--pink); }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--pink); }
+
+    /* ── Hero ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 3rem 4rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* glowing orb bg */
+    #hero::after {
+      content: '';
+      position: absolute;
+      top: 10%; left: -10%;
+      width: 60vw; height: 60vw;
+      background: radial-gradient(circle, rgba(255,95,160,0.12) 0%, transparent 65%);
+      pointer-events: none;
+      animation: orb-drift 8s ease-in-out infinite alternate;
+    }
+    @keyframes orb-drift {
+      from { transform: translate(0, 0); }
+      to   { transform: translate(8vw, 6vh); }
+    }
+
+    .hero-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 1.2rem;
+      opacity: 0;
+      animation: fade-up 0.6s 0.2s ease forwards;
+    }
+
+    .hero-title {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(3rem, 9vw, 7rem);
+      line-height: 0.95;
+      color: var(--cream);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fade-up 0.7s 0.4s ease forwards;
+    }
+    .hero-title .accent { color: var(--pink); }
+    .hero-title .accent2 { color: var(--lavender); }
+
+    .hero-sub {
+      max-width: 520px;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fade-up 0.7s 0.6s ease forwards;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      opacity: 0;
+      animation: fade-up 0.7s 0.8s ease forwards;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.6rem;
+      border-radius: 2px;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      letter-spacing: 0.06em;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: var(--pink);
+      color: #0b0b0f;
+      border: 2px solid var(--pink);
+      font-weight: 700;
+    }
+    .btn-primary:hover {
+      background: transparent;
+      color: var(--pink);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+    .btn-ghost:hover {
+      border-color: var(--lavender);
+      color: var(--lavender);
+    }
+
+    /* blinking cursor */
+    .cursor {
+      display: inline-block;
+      width: 3px; height: 0.9em;
+      background: var(--pink);
+      margin-left: 4px;
+      vertical-align: middle;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 50% { opacity: 0; } }
+
+    /* terminal pill badge */
+    .terminal-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      padding: 0.4rem 1rem 0.4rem 0.6rem;
+      font-size: 0.72rem;
+      color: var(--mint);
+      margin-bottom: 2rem;
+      opacity: 0;
+      animation: fade-up 0.6s 0.1s ease forwards;
+    }
+    .pill-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--mint);
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+    @keyframes fade-up {
+      from { opacity:0; transform:translateY(20px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    /* ── Section Layout ── */
+    section {
+      padding: 5rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .section-tag {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 0.6rem;
+    }
+
+    .section-title {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      color: var(--cream);
+      margin-bottom: 1rem;
+      line-height: 1.1;
+    }
+
+    .section-divider {
+      width: 40px;
+      height: 2px;
+      background: var(--pink);
+      margin-bottom: 3rem;
+    }
+
+    /* ── About ── */
+    #about .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .about-text p {
+      color: var(--muted);
+      margin-bottom: 1rem;
+      font-size: 0.88rem;
+    }
+    .about-text p strong { color: var(--text); }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .stat-box {
+      background: var(--surface);
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .stat-num {
+      font-family: var(--display);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--pink);
+      line-height: 1;
+    }
+    .stat-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-top: 0.3rem;
+    }
+
+    /* ── Skills ── */
+    #skills .skills-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .skill-group-label {
+      font-size: 0.68rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+    }
+
+    .skill-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 0.4rem 0.9rem;
+      font-size: 0.78rem;
+      color: var(--text);
+      border-radius: 2px;
+      transition: all 0.2s;
+      cursor: default;
+    }
+    .skill-pill:hover {
+      border-color: var(--pink);
+      color: var(--pink);
+      background: rgba(255,95,160,0.06);
+    }
+    .skill-pill.lang { border-color: rgba(184,160,255,0.3); color: var(--lavender); }
+    .skill-pill.tool { border-color: rgba(111,255,212,0.3); color: var(--mint); }
+
+    /* ── Projects ── */
+    #projects .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+
+    .project-card {
+      background: var(--surface);
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      transition: background 0.2s;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+    }
+    .project-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: var(--pink);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.3s ease;
+    }
+    .project-card:hover { background: #14141e; }
+    .project-card:hover::before { transform: scaleX(1); }
+
+    .project-number {
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+    .project-name {
+      font-family: var(--display);
+      font-weight: 700;
+      font-size: 1.2rem;
+      color: var(--cream);
+    }
+    .project-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      flex: 1;
+    }
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.4rem;
+    }
+    .project-tag {
+      font-size: 0.65rem;
+      letter-spacing: 0.08em;
+      background: rgba(255,95,160,0.1);
+      color: var(--pink);
+      padding: 0.2rem 0.55rem;
+      border-radius: 100px;
+    }
+    .project-arrow {
+      position: absolute;
+      top: 1.5rem; right: 1.5rem;
+      color: var(--muted);
+      font-size: 1rem;
+      transition: color 0.2s, transform 0.2s;
+    }
+    .project-card:hover .project-arrow {
+      color: var(--pink);
+      transform: translate(3px, -3px);
+    }
+
+    /* ── Contact ── */
+    #contact {
+      text-align: center;
+    }
+    #contact .contact-inner {
+      border: 1px solid var(--border);
+      padding: 4rem 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+    #contact .contact-inner::before {
+      content: '';
+      position: absolute;
+      bottom: -50%; left: 50%;
+      transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(255,95,160,0.1) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .contact-email {
+      font-family: var(--display);
+      font-size: clamp(1.4rem, 4vw, 2.5rem);
+      font-weight: 800;
+      color: var(--cream);
+      margin: 1rem 0 2rem;
+      display: block;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-email:hover { color: var(--pink); }
+
+    .social-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.2rem;
+      flex-wrap: wrap;
+    }
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.78rem;
+      letter-spacing: 0.08em;
+      transition: color 0.2s;
+    }
+    .social-link:hover { color: var(--lavender); }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+      letter-spacing: 0.05em;
+    }
+    footer span { color: var(--pink); }
+
+    /* ── Responsive ── */
+    @media (max-width: 700px) {
+      nav { padding: 1rem 1.5rem; }
+      section { padding: 3.5rem 1.5rem; }
+      #hero { padding: 7rem 1.5rem 3rem; }
+      #about .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+    }
+  </style>
+</head>
 <body>
-  <h1>Welcome to my landing page!</h1>
-  <p>This is my basic GitHub Pages website.</p>
+
+<!-- ── NAV ── -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    🧁 <span>slow</span>cupcke
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <div class="terminal-pill">
+    <span class="pill-dot"></span>
+    available for projects &amp; collabs
+  </div>
+  <p class="hero-label">// developer &amp; builder</p>
+  <h1 class="hero-title">
+    slow<span class="accent">cupcke</span><br />
+    <span class="accent2">builds</span> things<span class="cursor"></span>
+  </h1>
+  <p class="hero-sub">
+    Full-stack developer who loves crafting clean code, interesting tools, and the occasional side project at 2am.
+    Welcome to my little corner of the internet.
+  </p>
+  <div class="hero-actions">
+    <a href="#projects" class="btn btn-primary">→ view projects</a>
+    <a href="https://github.com/slowcupcke" target="_blank" class="btn btn-ghost">⌥ github profile</a>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <p class="section-tag">// 01 — about</p>
+  <h2 class="section-title">Who am I?</h2>
+  <div class="section-divider"></div>
+
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Hey! I'm <strong>slowcupcke</strong> — a developer who enjoys building things that are useful, occasionally weird, and always a little personal.</p>
+      <p>I spend my time working across the stack: from designing clean UIs to wiring up backends and poking around with APIs. I'm particularly drawn to open source, tooling, and projects that scratch my own itches.</p>
+      <p>When I'm not at the keyboard I'm probably overthinking my next project idea or watching tutorials I'll never finish. <strong>That's the dev life.</strong></p>
+      <br />
+      <a href="https://github.com/slowcupcke" target="_blank" class="btn btn-ghost" style="margin-top:0.5rem;">→ github.com/slowcupcke</a>
+    </div>
+    <div>
+      <div class="stats-grid">
+        <div class="stat-box">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">Side Projects Started</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">☕</div>
+          <div class="stat-label">Cups of Coffee</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">404</div>
+          <div class="stat-label">Bugs Fixed (Today)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num">1</div>
+          <div class="stat-label">GitHub Username</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── SKILLS ── -->
+<section id="skills">
+  <p class="section-tag">// 02 — skills</p>
+  <h2 class="section-title">What I work with</h2>
+  <div class="section-divider"></div>
+
+  <div class="skills-wrap">
+    <div>
+      <p class="skill-group-label">Languages</p>
+      <div class="skill-pills">
+        <span class="skill-pill lang">JavaScript</span>
+        <span class="skill-pill lang">TypeScript</span>
+        <span class="skill-pill lang">Python</span>
+        <span class="skill-pill lang">HTML / CSS</span>
+        <span class="skill-pill lang">Bash</span>
+      </div>
+    </div>
+    <div>
+      <p class="skill-group-label">Frameworks &amp; Libraries</p>
+      <div class="skill-pills">
+        <span class="skill-pill">React</span>
+        <span class="skill-pill">Node.js</span>
+        <span class="skill-pill">Next.js</span>
+        <span class="skill-pill">Express</span>
+        <span class="skill-pill">Tailwind CSS</span>
+      </div>
+    </div>
+    <div>
+      <p class="skill-group-label">Tools &amp; Platforms</p>
+      <div class="skill-pills">
+        <span class="skill-pill tool">Git &amp; GitHub</span>
+        <span class="skill-pill tool">VS Code</span>
+        <span class="skill-pill tool">Docker</span>
+        <span class="skill-pill tool">Linux</span>
+        <span class="skill-pill tool">Vercel</span>
+        <span class="skill-pill tool">Figma</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── PROJECTS ── -->
+<section id="projects">
+  <p class="section-tag">// 03 — projects</p>
+  <h2 class="section-title">Things I've built</h2>
+  <div class="section-divider"></div>
+
+  <div class="projects-grid">
+
+    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
+      <span class="project-arrow">↗</span>
+      <p class="project-number">01</p>
+      <h3 class="project-name">Project Alpha</h3>
+      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
+      <div class="project-tags">
+        <span class="project-tag">React</span>
+        <span class="project-tag">Node</span>
+        <span class="project-tag">API</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
+      <span class="project-arrow">↗</span>
+      <p class="project-number">02</p>
+      <h3 class="project-name">Project Beta</h3>
+      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
+      <div class="project-tags">
+        <span class="project-tag">Python</span>
+        <span class="project-tag">CLI</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
+      <span class="project-arrow">↗</span>
+      <p class="project-number">03</p>
+      <h3 class="project-name">Project Gamma</h3>
+      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
+      <div class="project-tags">
+        <span class="project-tag">TypeScript</span>
+        <span class="project-tag">Next.js</span>
+        <span class="project-tag">Postgres</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
+      <span class="project-arrow">↗</span>
+      <p class="project-number">04</p>
+      <h3 class="project-name">Project Delta</h3>
+      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
+      <div class="project-tags">
+        <span class="project-tag">JavaScript</span>
+        <span class="project-tag">Chrome Extension</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/slowcupcke" target="_blank" class="project-card">
+      <span class="project-arrow">↗</span>
+      <p class="project-number">05</p>
+      <h3 class="project-name">Project Epsilon</h3>
+      <p class="project-desc">A short description of what this project does and why it's cool. Replace with your actual project details.</p>
+      <div class="project-tags">
+        <span class="project-tag">Docker</span>
+        <span class="project-tag">Bash</span>
+        <span class="project-tag">Automation</span>
+      </div>
+    </a>
+
+    <a href="https://github.com/slowcupcke" target="_blank" class="project-card" style="justify-content:center;align-items:center;min-height:180px;">
+      <span style="font-size:0.78rem;color:var(--muted);">+ more on GitHub →</span>
+    </a>
+
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <p class="section-tag">// 04 — contact</p>
+  <h2 class="section-title">Say hello</h2>
+  <div class="section-divider" style="margin:0 auto 3rem;"></div>
+
+  <div class="contact-inner">
+    <p style="color:var(--muted);font-size:0.88rem;max-width:420px;margin:0 auto 1rem;">
+      Got a project idea, a question, or just want to chat about dev stuff? My inbox is open.
+    </p>
+    <a href="mailto:hello@slowcupcke.dev" class="contact-email">hello@slowcupcke.dev</a>
+
+    <div class="social-links">
+      <a href="https://github.com/slowcupcke" target="_blank" class="social-link">
+        ⌥ GitHub
+      </a>
+      <a href="#" class="social-link">
+        ✦ Twitter / X
+      </a>
+      <a href="#" class="social-link">
+        ◈ LinkedIn
+      </a>
+      <a href="#" class="social-link">
+        ◉ Discord
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span>🧁 <span>slow</span>cupcke</span>
+  <span>built with HTML &amp; CSS · no frameworks harmed</span>
+</footer>
+
 </body>
 </html>
